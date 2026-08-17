@@ -1,0 +1,14 @@
+.venv
+
+__pycache__/
+*$py.class
+*.pyc
+
+*.zip
+
+results/
+results_ad/
+
+runs/
+
+compare_csvs

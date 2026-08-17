@@ -1,0 +1,31 @@
+[project]
+name = "flowmeter-eval"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.4",
+    "pandas>=3.0.2",
+    "polars>=1.39.3",
+    "pyarrow>=23.0.1",
+    "scikit-learn>=1.8.0",
+    "scipy>=1.17.1",
+    "tensorboard>=2.20.0",
+    "torch>=2.11.0",
+    "tqdm>=4.67.3",
+]
+
+[project.optional-dependencies]
+nfstream = [
+    "nfstream>=6.5.4",
+]
+pragmatic-assessment = [
+    "mlxtend>=0.24.0",
+]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"

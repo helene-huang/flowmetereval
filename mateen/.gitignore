@@ -1,0 +1,7 @@
+**/__pycache__/
+*.pyc
+
+**/.ipynb_checkpoints/
+
+Models/*.pth
+!Models/IDS2017.pth

@@ -1,0 +1,8 @@
+[submodule "hhuang"]
+	path = cicflowmeter/hhuang/CICFlowmeter
+	url = https://github.com/helene-huang/CICFlowMeter.git
+	branch = fix/packet-segment-lengths
+[submodule "engelen"]
+	path = cicflowmeter/engelen/CICFlowmeter
+	url = https://github.com/GintsEngelen/CICFlowMeter
+	branch = master
