@@ -29,3 +29,4 @@ pragmatic-assessment = [
 [tool.pyright]
 venvPath = "."
 venv = ".venv"
+typeCheckingMode = "basic"
