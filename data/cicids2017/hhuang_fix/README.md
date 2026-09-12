@@ -1,15 +1,25 @@
 # CIC-IDS 2017 (hhuang fix)
 
-This version of the dataset is extracted using the version of CICFlowmeter by Huang et al. including only the feature fixes (without the extended feature set).
+This version of CIC-IDS 2017 is extracted using the version of CICFlowmeter by Huang et al.
 
 ## Get the dataset
 
-1) Extract the CSV files using `hhuang/CICFlowmeter:fix` (see `cicflowmeter/hhuang` directory) and place them in `data/cicids2017/hhuang_fix/unlabeled`
-2) Label the CSV files by running `data/cicids2017/labeling/cicids2017_label_transfer.py`: navigate to `data/cicids2017/labeling` and run
+The complete dataset can be downloaded directly from [here](https://zenodo.org/records/22016274).
+
+If instead you want to generate it, run the following script:
+1) Download the PCAP files from the [CIC website](https://cicresearch.ca/CICDataset/CIC-IDS-2017/) and move them to `data/cicids2017/raw`
+2) Make sure raw PCAP files are fixed and ordered by running `data/cicids2017/raw/fix_reorder.sh` (see detailed instructions `data/cicids2017/raw/README.md`)
+3) Extract the CSV files using `hhuang/cicflowmeter:latest` (see `cicflowmeter/hhuang` directory) and place them in `data/cicids2017/hhuang_fix/unlabeled`
+4) Label the CSV files by running `data/cicids2017/labeling/cicids2017_label_transfer.py`: navigate to `data/cicids2017/labeling` and run
 ```sh
 uv run cicids2017_label_transfer.py --path ../hhuang_fix/
 ```
-3) Merge the labeled files into a single `cicids2017.csv` file by navigating to `data/cicids2017/hhuang_fix/` and running
+5) Merge the labeled files into a single `cicids2017.csv` file by navigating to `data/cicids2017/hhuang_fix/` and running
 ```sh
 uv run merge_csvs.py
+```
+
+MD5 checksum:
+```
+ea6046dd1a3399ecbc88d682c3b5ba3e  cicids2017.csv
 ```
