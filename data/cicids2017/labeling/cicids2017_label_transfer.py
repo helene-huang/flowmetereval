@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--path", type=str, default="../engelen_latest/")
 args = parser.parse_args()
 
-LABEL_PATH: str = "../engelen_paper/"
+LABEL_PATH: str = "../engelen_paper/csvs/"
 VERSION_PATH: str = args.path
 UNLABELED_PATH: str = os.path.join(VERSION_PATH, "unlabeled")
 
