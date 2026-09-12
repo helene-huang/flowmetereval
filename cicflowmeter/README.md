@@ -58,7 +58,7 @@ IMAGE_NAME=hhuang/cicflowmeter
 PATH_TO_CIC=hhuang/CICFlowmeter
 PATH_TO_PCAP=../data/cicids2017/raw/out
 PATH_TO_CSV=../data/cicids2017/hhuang_fix/unlabeled
-JVM_OPTIONS="-Xmx8g -verbose:gc"
+JVM_OPTIONS="-Xmx8g"
 ```
 
 Change `PATH_TO_PCAP` to the directory where your reordered and fixed PCAP files are stored.
@@ -110,8 +110,8 @@ make validate CONFIG=engelen/configs/cicids2017.mk
 
 Expected output:
 ```
-sha256:6222c5fbf479fc9b8dbbc669c7ebc74c0173ffe37d310d2ec242f28d2f70eb1f
 sha256:0d5170c8b8abede941c32877c24229333d1065a25c68c547b401564a313ca318
+sha256:6222c5fbf479fc9b8dbbc669c7ebc74c0173ffe37d310d2ec242f28d2f70eb1f
 ```
 
 ### 4. Run CICFlowMeter
