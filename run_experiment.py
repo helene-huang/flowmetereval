@@ -20,7 +20,7 @@ from data.load import load_dataset
 from data.utils import balance_dataset
 from src.nids import eval_supervised_model, eval_ad_model
 
-MODEL_CHOICES = ["rf", "ad"]
+MODEL_CHOICES = ["rf", "ae"]
 
 DATASET_CHOICES = [
     "cicids2017_engelen_paper",
@@ -314,7 +314,7 @@ def main() -> None:
     logging.getLogger("PIL").setLevel(logging.WARNING)
     if model_name == "rf":
         exp1_eval_supervised_model(seed, feature_list_path, dataset_name)
-    elif model_name == "ad":
+    elif model_name == "ae":
         exp2_eval_ad_model(seed, feature_list_path, dataset_name, num_epochs)
     else:
         raise ValueError(f"Unknown model: {model_name}")
