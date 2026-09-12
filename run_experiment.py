@@ -9,14 +9,42 @@ You should have received a copy of the license along with this
 program. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 """
 
+import argparse
 import logging
 import os
+from argparse import Namespace
 
 import pandas as pd
 
 from data.load import load_dataset
 from data.utils import balance_dataset
 from src.nids import eval_supervised_model, eval_ad_model
+
+MODEL_CHOICES = ["rf", "ad"]
+
+DATASET_CHOICES = [
+    "cicids2017_engelen_paper",
+    "cicids2017_engelen_latest", 
+    "cicids2017_hhuang_fix",
+    "insdn_engelen_latest", 
+    "insdn_hhuang_fix",
+]
+
+DEFAULT_SEED = 0
+DEFAULT_NUM_EPOCHS = 2
+
+def get_args() -> Namespace:
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("model", type=str, choices=MODEL_CHOICES, help="Model to run.")
+    parser.add_argument("dataset", type=str, choices=DATASET_CHOICES, help="Dataset to use.")
+    parser.add_argument("--debug", action="store_true", help="Enable debug mode.")
+    parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="Random seed.")
+
+    parser.add_argument("--feature_list_path", type=str, default="./feature_files/feature_file_example.txt", help="Path to the feature list file.")
+    parser.add_argument("--epochs", type=int, default=DEFAULT_NUM_EPOCHS, help="Number of epochs (used only in `ad` experiments).")
+
+    return parser.parse_args()
 
 
 def read_feature_list(feature_list_path: str) -> list[str]:
@@ -106,41 +134,22 @@ def get_results_path(dataset_name: str, seed: int, feature_list_path: str, root_
     return results_path
 
 
-def exp1_eval_supervised_model() -> None:
+def exp1_eval_supervised_model(seed: int, feature_list_path: str, dataset_name: str) -> None:
     """
     Scenario: 'Abundant' case with temporal split in Apruzzese et al. (2023) 'SoK: Pragmatic Assessment of Network Intrusion Detection Systems'
     """
 
-    import argparse
-    parser = argparse.ArgumentParser()
-    #parser.add_argument("--debug", action="store_true", help="Enable debug mode.")
-    parser.add_argument("--seed", type=int, default=0, help="Random seed.")
-    parser.add_argument("--feature_list_path", type=str, default="feature_file.txt", help="Path to the feature list file.")
-
-    # Options: cicids2017_engelen_paper, cicids2017_engelen_latest, cicids2017_hhuang_fix, insdn_hhuang_fix, insdn_engelen_latest
-    parser.add_argument("--dataset", type=str, default="cicids2017_engelen_paper")
-    args = parser.parse_args()
-
-    # if args.debug:
-    #     logging.basicConfig(level=logging.DEBUG)
-    # else:
-    #     logging.basicConfig(level=logging.INFO)
     
-    logging.basicConfig(level=logging.DEBUG)
-    logging.getLogger("matplotlib").setLevel(logging.WARNING)
-    logging.getLogger("PIL").setLevel(logging.WARNING)
 
     train_size: float = 0.8
-    seed: int = args.seed
     balance_train: bool = True
     
-    dataset_name: str = args.dataset
     logging.info(f"Loading dataset {dataset_name}.")
     
-    feature_list: list[str] = read_feature_list(args.feature_list_path)
+    feature_list: list[str] = read_feature_list(feature_list_path)
     logging.info(f"Feature list (input): {feature_list}")
 
-    results_path = get_results_path(dataset_name, seed, args.feature_list_path)
+    results_path = get_results_path(dataset_name, seed, feature_list_path)
     logging.debug(f"{results_path}")
 
     X, y, attack_cat = load_dataset(name=dataset_name, feature_list=feature_list)
@@ -191,37 +200,15 @@ def exp1_eval_supervised_model() -> None:
             logging.info(f"{category} - {metric_name}: {metric_value}")
 
 
-def exp2_eval_ad_model() -> None:
+def exp2_eval_ad_model(seed: int, feature_list_path: str, dataset_name: str, num_epochs: int) -> None:
 
-    DEFAULT_NUM_EPOCHS = 100
 
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--debug", action="store_true", help="Enable debug mode.")
-    parser.add_argument("--seed", type=int, default=0, help="Random seed.")
-    parser.add_argument("--epochs", type=int, default=DEFAULT_NUM_EPOCHS, help="Number of epochs.")
-    parser.add_argument("--feature_list_path", type=str, default="feature_file.txt", help="Path to the feature list file.")
-
-    # Options: cicids2017_engelen_paper, cicids2017_engelen_latest, cicids2017_hhuang_fix
-    parser.add_argument("--dataset", type=str, default="cicids2017_engelen_paper")
-    args = parser.parse_args()
-
-    num_epochs: int = args.epochs
-
-    if args.debug:
-        logging.basicConfig(level=logging.DEBUG)
-    else:
-        logging.basicConfig(level=logging.INFO)
-
-    seed: int = args.seed
-    
-    dataset_name: str = args.dataset
     logging.info(f"Loading dataset {dataset_name}.")
     
-    feature_list: list[str] = read_feature_list(args.feature_list_path)
+    feature_list: list[str] = read_feature_list(feature_list_path)
     logging.info(f"Feature list (input): {feature_list}")
 
-    results_path = get_results_path(dataset_name, seed, args.feature_list_path, root_path="results_ad")
+    results_path = get_results_path(dataset_name, seed, feature_list_path, root_path="results_ad")
 
     X, y, attack_cat = load_dataset(name=dataset_name, feature_list=feature_list)
 
@@ -231,7 +218,7 @@ def exp2_eval_ad_model() -> None:
 
     if "insdn" in dataset_name.lower():  # NOTE: This is horrible but couldn't find a better solution :(
         X_benign = X[y == 0].reset_index(drop=True)
-        y_benign = y[y == 0].reset_index(drop=True)  # could have done pd.Series(np.zeros(len(X_benign)))
+        y_benign = y[y == 0].reset_index(drop=True)  # this is equivalent to pd.Series(np.zeros(len(X_benign)))
         attack_cat_benign = attack_cat[y == 0].reset_index(drop=True) 
         X_attack = X[y != 0].reset_index(drop=True)
         y_attack = y[y != 0].reset_index(drop=True)
@@ -256,7 +243,7 @@ def exp2_eval_ad_model() -> None:
 
 
     else:  # cicids2017
-        num_train: int = 693702  # from the original paper
+        num_train: int = 693702  # use same split as the Mateen paper
         X_train = X.iloc[:num_train]
         y_train = y.iloc[:num_train]
 
@@ -276,9 +263,9 @@ def exp2_eval_ad_model() -> None:
     logging.debug(f"y_train.value_counts(): {y_train.value_counts()}")
     logging.debug(f"y_test.value_counts(): {y_test.value_counts()}")
 
-    normalised_feature_list_path: str = str(args.feature_list_path.split("/")[-1].removesuffix(".txt"))
+    normalized_feature_list_path: str = str(feature_list_path.split("/")[-1].removesuffix(".txt"))
 
-    tensorboard_log_dir: str = os.path.join("runs", f"{dataset_name}_config_{normalised_feature_list_path}_seed{seed}")
+    tensorboard_log_dir: str = os.path.join("runs", f"{dataset_name}_config_{normalized_feature_list_path}_seed{seed}")
     logging.info(f"{tensorboard_log_dir=}")
 
     print(f"{results_path=}")
@@ -307,9 +294,30 @@ def exp2_eval_ad_model() -> None:
 
 def main() -> None:
 
-    exp1_eval_supervised_model()
-    # exp2_eval_ad_model()
+    args = get_args()
 
+    # args -> variables for static type checking
+    model_name: str = args.model
+    dataset_name: str = args.dataset
+    debug: bool = args.debug
+    seed: int = args.seed
+    feature_list_path: str = args.feature_list_path
+    num_epochs: int = args.epochs
+
+    if debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
+    # disable matplotlib and PIL debug messages
+    logging.getLogger("matplotlib").setLevel(logging.WARNING)
+    logging.getLogger("PIL").setLevel(logging.WARNING)
+    if model_name == "rf":
+        exp1_eval_supervised_model(seed, feature_list_path, dataset_name)
+    elif model_name == "ad":
+        exp2_eval_ad_model(seed, feature_list_path, dataset_name, num_epochs)
+    else:
+        raise ValueError(f"Unknown model: {model_name}")
 
 if __name__ == "__main__":
     main()
