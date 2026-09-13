@@ -1,3 +1,5 @@
+import argparse
+
 import numpy as np
 import pandas as pd
 import polars as pl
@@ -5,7 +7,7 @@ import matplotlib.pyplot as plt
 
 import matplotlib.colors as mcolors
 
-def plot_binned_heatmap(csv_path: str, n_time_bins: int = 500, output_path: str = "timegoeson_cicids2017.png", split: float | None=None):
+def plot_binned_heatmap(csv_path: str, n_time_bins: int = 500, output_path: str = "timeline_cicids2017.png", split: float | None=None):
     # 1. Read data and map labels to category IDs
     df = (
         pl.read_csv(csv_path, columns=["Timestamp", "Label"])
@@ -84,7 +86,17 @@ def plot_binned_heatmap(csv_path: str, n_time_bins: int = 500, output_path: str 
 
 if __name__ == "__main__":
 
-    # csv_path = "./data/insdn/hhuang_fix/final/insdn.csv"
-    csv_path = "./data/cicids2017/hhuang_fix/cicids2017.csv"
+    parser = argparse.ArgumentParser(description="Plot a binned heatmap of event density over time.")
+    parser.add_argument("--dataset", choices=["insdn", "cicids2017"], default="cicids2017", help="Dataset to plot.")
+    parser.add_argument("--path", type=str, default=None, help="Path to the CSV file. If not provided, a default path will be used based on the dataset.")
+    args = parser.parse_args()
 
-    plot_binned_heatmap(csv_path, n_time_bins=500, split=0.3)
+    dataset: str = args.dataset
+
+    csv_path: str = ""
+    if not args.path:
+        csv_path = f"./data/{args.dataset}/hhuang_fix/{args.dataset}.csv"
+    else:
+        csv_path = args.path
+
+    plot_binned_heatmap(csv_path, n_time_bins=500, output_path="results/timeline_cicids2017.png", split=0.3)

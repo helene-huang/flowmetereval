@@ -3,8 +3,8 @@ import re
 import os
 
 
-result_dir = "./results"
-# result_dir = "./results_ad"
+result_dir = "./results/rf"
+# result_dir = "./results/ae"
 
 # base_dir: str = os.path.join(result_dir, "insdn_hhuang_fix")
 base_dir: str = os.path.join(result_dir, "cicids2017_merged")

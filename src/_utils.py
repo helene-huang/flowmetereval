@@ -197,7 +197,7 @@ def get_plot_probabilities(y_true: pd.Series, y_prob: pd.Series, results_path: s
 def get_performance_by_attack_category(y_pred: pd.Series, y_prob: pd.Series | None, attack_cat: pd.Series) -> dict[str, dict[str, float]]:
     accuracy_by_attack_category = {}
     probs_by_attack_category = {}
-    for attack_cat_value in attack_cat.unique():
+    for attack_cat_value in attack_cat.dropna().unique():
         if attack_cat_value == "BENIGN":
             continue
         accuracy_by_attack_category[attack_cat_value] = y_pred[attack_cat == attack_cat_value].mean()

@@ -17,7 +17,7 @@ from pathlib import Path
 import pandas as pd
 
 
-DEFAULT_RESULTS_DIR = Path("results")
+DEFAULT_RESULTS_DIR = Path("results/rf")
 DEFAULT_ALPHA = 0.05
 DEFAULT_OUTPUT_FILE_NAME = "seg_header_min_exp_ad_table.tex"
 MISSING_VALUE = "---"
@@ -93,7 +93,7 @@ def parse_args() -> argparse.Namespace:
         "--results-dir",
         type=Path,
         default=DEFAULT_RESULTS_DIR,
-        help="Directory containing one subdirectory per dataset. Default: results.",
+        help="Directory containing one subdirectory per dataset. Default: results/rf.",
     )
     parser.add_argument(
         "--alpha",
@@ -107,7 +107,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help=(
             "Output .tex path. Default: "
-            "results/seg_header_min_exp_ad_table.tex."
+            "results/rf/seg_header_min_exp_ad_table.tex."
         ),
     )
     return parser.parse_args()
@@ -447,7 +447,7 @@ def build_latex_table(results_cache: ResultsCache, alpha: float) -> str:
     add_line(r"    \setlength{\tabcolsep}{6pt}")
     add_line(r"    \centering")
     add_line(
-        rf"    \caption{{Effect of adding segment-header minimum features to the corrected-value configurations for anomaly detection. Values in bold are the best results, and results not significantly different from the best, within this appendix comparison. A dagger ($^\dagger$) marks the better value when duplicate and no-duplicate variants differ significantly ($p < {alpha:g}$).}}"
+        rf"    \caption{{Effect of adding segment-header minimum features to the corrected-value configurations. Values in bold are the best results, and results not significantly different from the best, within this appendix comparison. A dagger ($^\dagger$) marks the better value when duplicate and no-duplicate variants differ significantly ($p < {alpha:g}$).}}"
     )
     add_line(r"    \label{tab:seg_header_min_exp_ad}")
     add_line(r"    \resizebox{\textwidth}{!}{")

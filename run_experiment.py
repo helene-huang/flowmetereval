@@ -42,7 +42,7 @@ def get_args() -> Namespace:
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="Random seed.")
 
     parser.add_argument("--feature_list_path", type=str, default="./feature_files/feature_file_example.txt", help="Path to the feature list file.")
-    parser.add_argument("--epochs", type=int, default=DEFAULT_NUM_EPOCHS, help="Number of epochs (used only in `ad` experiments).")
+    parser.add_argument("--epochs", type=int, default=DEFAULT_NUM_EPOCHS, help="Number of epochs (used only in `ae` experiments).")
 
     return parser.parse_args()
 
@@ -116,7 +116,7 @@ def stratified_temporal_split(X: pd.DataFrame, y: pd.Series, attack_cat: pd.Seri
     return X_train, X_test, y_train, y_test, attack_cat_train, attack_cat_test
 
 
-def get_results_path(dataset_name: str, seed: int, feature_list_path: str, root_path: str="results") -> str:
+def get_results_path(dataset_name: str, seed: int, feature_list_path: str, root_path: str="results/rf") -> str:
     """
     Get the results path for a given dataset, seed, and feature list path.
     Example: given dataset_name='cicids2017_engelen_paper', seed=0, feature_list_path='feature_file.txt', the results path will be 'cicids2017_engelen_paper_0_feature_file'.
@@ -208,7 +208,7 @@ def exp2_eval_ad_model(seed: int, feature_list_path: str, dataset_name: str, num
     feature_list: list[str] = read_feature_list(feature_list_path)
     logging.info(f"Feature list (input): {feature_list}")
 
-    results_path = get_results_path(dataset_name, seed, feature_list_path, root_path="results_ad")
+    results_path = get_results_path(dataset_name, seed, feature_list_path, root_path="results/ae")
 
     X, y, attack_cat = load_dataset(name=dataset_name, feature_list=feature_list)
 
