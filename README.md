@@ -1,6 +1,9 @@
-# Flowmeter Evaluation
+# Correcting CICFlowMeter Features for Interpretable NIDS Evaluation
 
-Test suite for flowmeter evaluation.
+This repository contains the code for reproducing the paper
+"When Packet Length Is Not Packet Length: Correcting CICFlowMeter Features for Interpretable NIDS Evaluation"
+by Huang et al.
+
 
 ## Clone submodules
 
@@ -16,48 +19,56 @@ Using [uv](https://github.com/astral-sh/uv):
 uv sync --all-extras
 ```
 
-## Download data 
+## Data acquistion
 
-### Original dataset ($D_{\text{base}}$) by Engelen et al.
+See [./data/README.md](./data/README.md)
 
-Navigate to `./data/cicids2017/engelen_paper/` and run
+## Run small experiment
 
-```sh
-get_data.sh
-```
-
-### Generate other versions of CIC-IDS dataset $D_{\text{latest}}$, $D_{\text{fix}}$, $D_{\text{ext}}$)
-
-- Download raw PCAP files from the CIC website: [link](https://cicresearch.ca/CICDataset/CIC-IDS-2017/)
-- Follow the instructions in the README file in 
-    - `./data/cicids2017/engelen_latest/`
-    
-
-## Run code
-
-### Simple experiment with RandomForests
+Useful to verify that everything is set up correctly:
 
 ```sh
-uv run main.py --dataset <dataset_name>
+sh scripts/experiments/small_experiment.sh
 ```
 
-Replace `<dataset_name>` with either of the following:
-- `cicids2017_engelen_paper`
-- `cicids2017_engelen_latest`
-- `cicids2017_hhuang_fix`
+## Reproduce results of the paper
 
+1) Run the experiment scripts (this takes a long time):
+```sh
+sh scripts/experiments/experiment_cicids2017_rf.sh
+sh scripts/experiments/experiment_cicids2017_ae.sh
+sh scripts/experiments/experiment_insdn_rf.sh
+sh scripts/experiments/experiment_insdn_ae.sh
+```
 
-### Pragmatic assessment
+2) Obtain global results
+```sh
+uv run analysis/analyze_results.py --result-dir ./results/rf --dataset cicids2017
+uv run analysis/analyze_results.py --result-dir ./results/ae --dataset cicids2017
+uv run analysis/analyze_results.py --result-dir ./results/rf --dataset insdn
+uv run analysis/analyze_results.py --result-dir ./results/ae --dataset insdn
+```
 
-Run the notebooks in order (requires `jupyter`):
-
-- [pragmatic_assessment/preprocessing_ids17.ipynb](pragmatic_assessment/preprocessing_ids17.ipynb)
-- [pragmatic_assessment/assessment_IDS17.ipynb](pragmatic_assessment/assessment_IDS17.ipynb)
-
-### Mateen (Anomaly detection)
-
-Navigate to `./mateen/` and run
+3) Calculate performance statistics shown in Tables 5 and 6 of the paper:
 
 ```sh
-uv run standalone.py --dataset_path=../data/cicids2017/engelen_paper/cicids2017.csv
+uv run analysis/generate_overall_results_table.py --result-dir ./results/rf
+uv run analysis/generate_overall_results_table.py --result-dir ./results/ae
 ```
+
+4) Calculate p-values for significance in in Tables 5 and 6 of the paper:
+
+```sh
+uv run analysis/get_pval_pivot_table.py--result-dir ./results/rf
+uv run analysis/get_pval_pivot_table.py --result-dir ./results/ae
+```
+
+### Reference
+
+@inproceedings{marchioro2025network,
+  title={When Packet Length Is Not Packet Length: Correcting CICFlowMeter Features for Interpretable NIDS Evaluation},
+  author={Huang, Hélene and Bois, Sébastien and Marchioro, Thomas},
+  booktitle={European Symposium on Research in Computer Security},
+  year={2026},
+  organization={Springer}
+}
