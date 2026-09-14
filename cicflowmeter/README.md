@@ -2,8 +2,8 @@
 
 This directory contains two CICFlowMeter implementations as Git submodules:
 
-- `engelen/CICFlowmeter`: the latest Engelen implementation (ref. Liu, Engelen, et al.)
-- `hhuang/CICFlowmeter`: the Huang et al. implementation with the feature fixes
+- `engelen/CICFlowMeter`: the latest Engelen implementation (ref. Liu, Engelen et al.)
+- `hhuang/CICFlowMeter`: the Huang et al. implementation with the feature fixes
 
 ## Requirements
 
@@ -37,7 +37,7 @@ allocate up to 40 GB and therefore require a machine sized accordingly.
 
 ### 1. Fix and reorder packets by timestamp
 
-Use `data/cicids2017/raw/fix_reorder.sh` and `data/insdn/utils/fix_reorder.sh` to apply the necessary fixes to the datasets. 
+Use `data/cicids2017/raw/fix_reorder.sh` and `data/insdn/utils/fix_reorder.sh` to apply the necessary fixes to the datasets.
 They process every PCAP in a directory and replace each source file in place, so use them only on a working-copy directory
 containing complete captures.
 
@@ -52,7 +52,7 @@ The repository provides these implementation and dataset combinations:
 | Huang | CIC-IDS 2017 | `hhuang/configs/cicids2017.mk` |
 | Huang | InSDN | `hhuang/configs/insdn.mk` |
 
-The content of a config looks like this:
+A configuration file looks like this:
 ```sh
 IMAGE_NAME=hhuang/cicflowmeter
 PATH_TO_CIC=hhuang/CICFlowmeter
@@ -114,7 +114,7 @@ sha256:0d5170c8b8abede941c32877c24229333d1065a25c68c547b401564a313ca318
 sha256:6222c5fbf479fc9b8dbbc669c7ebc74c0173ffe37d310d2ec242f28d2f70eb1f
 ```
 
-### 4. Run CICFlowMeter
+### 4. Run CICFlowmeter
 
 Use the same configuration selected when building the image.
 
@@ -149,7 +149,7 @@ make run \
     PATH_TO_PCAP=/path/to/single/ordered/pcap
 ```
 
-The commands run in the foreground and the temporary container is removed
+The commands run in the foreground, and the temporary container is removed
 automatically when extraction finishes.
 
 ### 5. Fix output ownership
@@ -175,12 +175,12 @@ head -n 1 /path/to/output/csv/example.pcap_Flow.csv
 wc -l /path/to/output/csv/example.pcap_Flow.csv
 ```
 
-The expected columns depend on the selected CICFlowMeter implementation and
+The expected columns depend on the selected CICFlowmeter implementation and
 revision.
 
 ## Troubleshooting
 
-- If CICFlowMeter reports disordered packets, stop the run, remove the partial
+- If CICFlowmeter reports disordered packets, stop the run, remove the partial
   CSV, reorder the source capture, and run the extraction again.
 - If the run is interrupted or fails, a partial CSV may remain in
   `PATH_TO_PCAP` because the Makefile moves files only after Docker succeeds.

@@ -19,7 +19,7 @@ Using [uv](https://github.com/astral-sh/uv):
 uv sync --all-extras
 ```
 
-## Data acquistion
+## Data acquisition
 
 See [./data/README.md](./data/README.md)
 
@@ -41,7 +41,7 @@ sh scripts/experiments/experiment_insdn_rf.sh
 sh scripts/experiments/experiment_insdn_ae.sh
 ```
 
-2) Obtain global results
+2) Obtain global results:
 ```sh
 uv run analysis/analyze_results.py --result-dir ./results/rf --dataset cicids2017
 uv run analysis/analyze_results.py --result-dir ./results/ae --dataset cicids2017
@@ -56,19 +56,21 @@ uv run analysis/generate_overall_results_table.py --result-dir ./results/rf
 uv run analysis/generate_overall_results_table.py --result-dir ./results/ae
 ```
 
-4) Calculate p-values for significance in in Tables 5 and 6 of the paper:
+4) Calculate p-values for significance in Tables 5 and 6 of the paper:
 
 ```sh
-uv run analysis/get_pval_pivot_table.py--result-dir ./results/rf
+uv run analysis/get_pval_pivot_table.py --result-dir ./results/rf
 uv run analysis/get_pval_pivot_table.py --result-dir ./results/ae
 ```
 
 ### Reference
 
-@inproceedings{marchioro2025network,
+```bibtex
+@inproceedings{huang2026packet,
   title={When Packet Length Is Not Packet Length: Correcting CICFlowMeter Features for Interpretable NIDS Evaluation},
-  author={Huang, Hélene and Bois, Sébastien and Marchioro, Thomas},
+  author={Huang, Hélène and Bois, Sébastien and Marchioro, Thomas},
   booktitle={European Symposium on Research in Computer Security},
   year={2026},
   organization={Springer}
 }
+```

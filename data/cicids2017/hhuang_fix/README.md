@@ -1,14 +1,14 @@
 # CIC-IDS 2017 (hhuang fix)
 
-This version of CIC-IDS 2017 is extracted using the version of CICFlowmeter by Huang et al.
+This version of CIC-IDS 2017 was extracted using the version of CICFlowMeter by Huang et al.
 
 ## Get the dataset
 
 The complete dataset can be downloaded directly from [here](https://zenodo.org/records/22016274).
 
-If instead you want to generate it, run the following script:
+If instead you want to generate it, follow these steps:
 1) Download the PCAP files from the [CIC website](https://cicresearch.ca/CICDataset/CIC-IDS-2017/) and move them to `data/cicids2017/raw`
-2) Make sure raw PCAP files are fixed and ordered by running `data/cicids2017/raw/fix_reorder.sh` (see detailed instructions `data/cicids2017/raw/README.md`)
+2) Make sure raw PCAP files are fixed and ordered by running `data/cicids2017/raw/fix_reorder.sh` (see the detailed instructions in `data/cicids2017/raw/README.md`)
 3) Extract the CSV files using `hhuang/cicflowmeter:latest` (see `cicflowmeter/hhuang` directory) and place them in `data/cicids2017/hhuang_fix/unlabeled`
 4) Label the CSV files by running `data/cicids2017/labeling/cicids2017_label_transfer.py`: navigate to `data/cicids2017/labeling` and run
 ```sh
