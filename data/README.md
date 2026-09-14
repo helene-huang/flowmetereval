@@ -5,7 +5,9 @@ The versions of CIC-IDS 2017 and InSDN extracted with the corrected version of C
 The link contains two CSV files, `cicids2017.csv` and `insdn.csv`. These should be placed in
 ```
 data/cicids2017/hhuang_fix/cicids2017.csv
-data/insdn/hhuang_fix/insdn.csv
+data/insdn/hhuang_fix/final/insdn.csv
 ```
+
+Make sure to place files in their correct paths: `insdn.csv` should be placed in the nested `final` directory.
 
 Additionally, the original dataset by Liu, Engelen et al. should be placed in `data/cicids2017/engelen_paper` (follow the instuctions in `data/cicids2017/engelen_paper/README.md`).
