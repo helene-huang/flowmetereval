@@ -22,15 +22,15 @@ from pathlib import Path
 import pandas as pd
 
 
-DEFAULT_RESULTS_DIR = Path("results")
+DEFAULT_RESULTS_DIR = Path("results/rf")
 DEFAULT_ALPHA = 0.05
 OUTPUT_FILE_NAME = "results_table.tex"
 MISSING_VALUE = "---"
 DAGGER = r"$^{\dagger}$"
 
 DATASETS: list[tuple[str, str]] = [
-    ("cicids2017_merged", r"\cicids"),
-    ("insdn_hhuang_fix", r"\insdn"),
+    ("cicids2017", r"\cicids"),
+    ("insdn", r"\insdn"),
 ]
 
 CONFIG_GROUPS: list[tuple[str, str | None, str]] = [
@@ -89,7 +89,7 @@ def parse_args() -> argparse.Namespace:
         "--results-dir",
         type=Path,
         default=DEFAULT_RESULTS_DIR,
-        help="Directory containing one subdirectory per dataset. Default: results.",
+        help="Directory containing one subdirectory per dataset. Default: results/rf.",
     )
     parser.add_argument(
         "--alpha",

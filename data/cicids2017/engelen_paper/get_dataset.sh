@@ -22,7 +22,7 @@ echo_verbose "downloading zip file"
 wget https://intrusion-detection.distrinet-research.be/CNS2022/Datasets/CICIDS2017_improved.zip
 
 echo_verbose "unzipping dataset"
-unzip CICIDS2017_improved.zip
+unzip CICIDS2017_improved.zip -d csvs
 
 echo_verbose "removing zip file"
 rm CICIDS2017_improved.zip
@@ -31,9 +31,5 @@ echo_verbose "merging csv files"
 python3 merge_csvs.py
 
 # NOTE: uncomment this to remove the split files (needed only for `pragmatic_assessment`)
-# for file in *.csv; do
-# 	if [ "$file" != "cicids2017.csv" ]; then
-# 		rm "$file"
-# 		echo_verbose "removed $file"
-# 	fi
-# done
+# rm -rf csvs
+# echo_verbose "removed csvs directory"

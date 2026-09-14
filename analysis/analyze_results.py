@@ -1,3 +1,4 @@
+import argparse
 import os
 
 import matplotlib.pyplot as plt
@@ -6,7 +7,7 @@ import pandas as pd
 
 from scipy.stats import ttest_rel
 
-from feature_mapping import MAP_ENGELEN_LATEST_NEW_OLD
+from src.feature_mapping import MAP_ENGELEN_LATEST_NEW_OLD
 
 def find_unique_configs(base_dir: str) -> list[str]:
 
@@ -22,8 +23,7 @@ def find_unique_configs(base_dir: str) -> list[str]:
 
 
 def extract_seeds(metric_files: list[str]) -> set[int]:
-    """Return a set containing the seeds for one config
-    """
+    """Return a set containing the seeds for one config."""
     return set([int(s.split("seed")[-1].rstrip("/metrics.csv")) for s in metric_files])
 
 
@@ -181,7 +181,7 @@ def build_beautiful_table(
         return pd.DataFrame()
     rows = []
     for class_name in class_names:
-        row = {"class": class_name}
+        row: dict[str, float | str] = {"class": class_name}
         for config in unique_configs:
             df, seeds = per_class_data.get(config, (pd.DataFrame(), []))
             if not df.empty and class_name in df.columns:
@@ -248,7 +248,7 @@ def save_mean_accuracy_per_attack_per_config(
     mean_recall_table = build_beautiful_table(unique_configs, per_class_data, content='mean')
 
     micro_recall_table = mean_recall_table.agg(lambda x: rf"{x.mean():.4f}$\pm${x.std():.4f}")
-    micro_recall_table.columns = ['micro detection rate']
+    micro_recall_table.columns = ['micro detection rate']  # type: ignore
     micro_recall_table.to_latex(os.path.join(base_dir, "micro_accuracy_across_attacks.tex"))
 
     out_path = os.path.join(base_dir, "mean_accuracy_per_attack_per_config.csv")
@@ -719,11 +719,16 @@ if __name__ == "__main__":
 
     # Example path "./results/cicids2017_hhuang_fix/file_0_seed2/metrics.csv"
 
-    result_dir = "./results"
-    # result_dir = "./results_ad"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--result-dir", default="./results/rf")
+    parser.add_argument("--dataset", default="cicids2017", choices=["cicids2017", "insdn"])
+    args = parser.parse_args()
+
+    result_dir: str = args.result_dir
+    dataset_name: str = args.dataset
 
     # base_dir: str = os.path.join(result_dir, "insdn_hhuang_fix")
-    base_dir: str = os.path.join(result_dir, "cicids2017_merged")
+    base_dir: str = os.path.join(result_dir, f"{dataset_name}_hhuang_fix")
 
     unique_configs = find_unique_configs(base_dir)
 
@@ -909,7 +914,7 @@ if __name__ == "__main__":
     #  Feature importances: average over seeds, compare across configs    #
     # ------------------------------------------------------------------- #
 
-    if result_dir == "./results":  # only for random forest model
+    if result_dir == "./results/rf":  # only for random forest model
         print(f"\n{'='*60}")
         print("Processing feature_importances.csv")
     

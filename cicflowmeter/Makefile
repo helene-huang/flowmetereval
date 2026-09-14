@@ -4,9 +4,12 @@ include $(CONFIG)
 build:
 	docker build -t $(IMAGE_NAME) $(PATH_TO_CIC)
 
+validate:
+	docker image inspect $(IMAGE_NAME):latest --format '{{.Id}}'
+
 run:
 	# NOTE: Override the path to the pcap files if needed
-	# `make run PATH_TO_PCAP=/path/to/pcap/files`
+	# `make run CONFIG=/path/to/config PATH_TO_PCAP=/path/to/pcap/files`
 	docker run -e JAVA_TOOL_OPTIONS=$(JVM_OPTIONS) --rm -v $(PATH_TO_PCAP):/tmp/pcap $(IMAGE_NAME):latest /tmp/pcap/ /tmp/pcap/
 	mkdir -p $(PATH_TO_CSV)
 	mv $(PATH_TO_PCAP)/*.csv $(PATH_TO_CSV)

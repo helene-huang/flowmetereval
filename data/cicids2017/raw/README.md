@@ -1,31 +1,51 @@
-# RAW PCAP files
+# Raw PCAP files
 
-This is the default directory for storing raw PCAP files of the CIC-IDS 2017 dataset. The raw PCAP files can be downloaded from the CIC website: [link](https://cicresearch.ca/CICDataset/CIC-IDS-2017/)
+This is the default directory for storing raw PCAP files of the CIC-IDS 2017 dataset. The files can be downloaded from the [CIC website](https://cicresearch.ca/CICDataset/CIC-IDS-2017/).
 
-## Scripts
+## Requirements
 
-### Requirements
-
-```bash
-sudo apt install pcapfix wireshark tcpdump
+```sh
+apt install pcapfix wireshark tcpdump
 ```
 
-With the previous version using `tshark`, it was recommanded to run `--liu-dedup` with 15GB of memory available.
-Using `tcpdump`, it only requires 4GB.
+The `wireshark` package provides `reordercap`, `editcap`, and `mergecap`.
 
-### fix_reorder.sh
-This script calls `pcapfix` and `reorderpcap` to
-* repair damaged .pcap and .pcapng files
-* reorder by ascending timestamps the packets of the captures
+## Fix and reorder the PCAP files
 
-### deduplicate.sh
-Calls `fix_reorder.sh` and provides two packet deduplication approaches:
-* the one from [Lanvin](https://github.com/GintsEngelen/CNS2022_Code/pull/1)
-* the one from [Liu](https://github.com/GintsEngelen/CNS2022_Code/pull/4)
+To reproduce the results of the paper, keep duplicate packets by using `--no-dedup`. From the repository root, run:
 
-Those can be executed using the following syntax:
 ```bash
-./deduplicate.sh [--no-fix-reorder] [--no-dedup|--lanvin-dedup|--liu-dedup] input_file output_file
+cd data/cicids2017/raw
+sh ./deduplicate.sh --no-dedup /path/to/pcaps /path/to/pcaps
+```
+or, equivalently, just
+```bash
+cd data/cicids2017/raw
+sh ./fix_reorder.sh /path/to/pcaps
 ```
 
-By default, --no-dedup is choosen and the script `fix_reorder.sh` is called. To bypass this script, the flag `--no-fix-reorder` can be set.
+By default, `fix_reorder.sh` replaces the input files. To keep the originals, provide an output directory:
+
+```bash
+sh ./fix_reorder.sh /path/to/pcaps /path/to/reordered-pcaps
+```
+
+## Reordered file checksums
+
+```
+36ad129a083d9db424cbd3b2a7c345fa  Monday-WorkingHours.pcap
+435403f09ddb08a4355905517a8323ee  Tuesday-WorkingHours.pcap
+eed9c22b766ece94d338eaf68d6d0375  Wednesday-workingHours.pcap
+2e78f30bae5402882285f58ea0bbb25e  Thursday-WorkingHours.pcap
+e02b8878c6d960a5b2594e7c3e43bfa0  Friday-WorkingHours.pcap
+```
+
+## Other deduplication options
+
+`deduplicate.sh` also implements the [Lanvin](https://github.com/GintsEngelen/CNS2022_Code/pull/1) and [Liu](https://github.com/GintsEngelen/CNS2022_Code/pull/4) approaches:
+
+```bash
+sh ./deduplicate.sh [--no-fix-reorder] [--no-dedup|--lanvin-dedup|--liu-dedup] input_directory output_directory
+```
+
+Use `--no-fix-reorder` only when the input files have already been fixed and reordered.
